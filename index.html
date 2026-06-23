@@ -43,7 +43,7 @@
   #felix-holder img{height:100%;width:auto;animation:felixFloat 7s ease-in-out infinite;filter:drop-shadow(0 22px 40px rgba(15,4,30,.5));backface-visibility:hidden}
   @keyframes felixFloat{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-10px,0)}}
   .bg-scrim{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(8,7,12,.42) 0%,rgba(8,7,12,.28) 26%,rgba(8,7,12,.5) 64%,rgba(8,7,12,.86) 100%)}
-  #bg-black{position:absolute;inset:0;background:#0a0a0c;opacity:0;pointer-events:none;will-change:opacity}
+  #bg-black{position:absolute;inset:0;background:#0a0a0c;opacity:0;pointer-events:none;will-change:opacity;transform:translateZ(0)}
 
   /* panels: one radius system. cards 16px, inputs 12px, buttons pill */
   .panel{background:rgba(17,15,21,.66);border:1px solid rgba(255,255,255,.09);border-radius:16px}
@@ -110,9 +110,12 @@
   .bf-d2{transition-delay:.30s}
   .bf-d3{transition-delay:.45s}
 
+  /* kill glass-card backdrop-filter during scroll so GPU compositor skips cross-layer blur */
+  .is-scrolling .glass-card{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+
   /* glassmorphism hero cards (template merge) */
   section#top{contain:none}
-  .glass-card{background:linear-gradient(135deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,.03) 100%);border:1px solid rgba(255,255,255,.12);border-radius:24px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);box-shadow:0 25px 50px -12px rgba(0,0,0,.5)}
+  .glass-card{background:linear-gradient(135deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,.03) 100%);border:1px solid rgba(255,255,255,.12);border-radius:24px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);box-shadow:0 25px 50px -12px rgba(0,0,0,.5);transition:backdrop-filter .3s ease,-webkit-backdrop-filter .3s ease}
   @keyframes glassMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   .glass-marquee{animation:glassMarquee 40s linear infinite;will-change:transform}
   @keyframes glassping{75%,100%{transform:scale(2);opacity:0}}
@@ -504,6 +507,13 @@
     gsap.registerPlugin(ScrollTrigger);
     gsap.ticker.lagSmoothing(0);
     ScrollTrigger.config({ ignoreMobileResize:true, fastScrollEnd:true });
+    // disable glass-card backdrop-filter during scroll (eliminates cross-layer blur resampling)
+    let scrollIdleTimer;
+    window.addEventListener('scroll', () => {
+      document.body.classList.add('is-scrolling');
+      clearTimeout(scrollIdleTimer);
+      scrollIdleTimer = setTimeout(() => document.body.classList.remove('is-scrolling'), 200);
+    }, { passive: true });
 
     // candy world dissolves into clean black, paced with scroll (GPU opacity only)
     gsap.to('#bg-black', { opacity:1, ease:'none',
