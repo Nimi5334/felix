@@ -34,8 +34,11 @@
   ::-webkit-scrollbar-thumb{background:#2a2530;border-radius:8px}
 
   /* fixed candy-world background (Higgsfield), crossfades to black on scroll */
-  #bg-wrap{transform:translateZ(0)}
-  #candy-layer{position:absolute;inset:0;background-size:cover;background-position:center 46%;transform:scale(1.08);will-change:transform}
+  /* lock the fixed background to the LARGEST viewport so the mobile address-bar
+     show/hide never resizes it (which forced background-size:cover to
+     re-rasterize -> the visible "pop"/resolution jump). One stable GPU layer. */
+  #bg-wrap{top:0;left:0;right:auto;bottom:auto;width:100vw;height:100vh;height:100lvh;transform:translateZ(0);backface-visibility:hidden;contain:strict}
+  #candy-layer{position:absolute;inset:0;background-size:cover;background-position:center 46%;transform:translateZ(0) scale(1.08);will-change:transform;backface-visibility:hidden}
   #felix-holder{position:absolute;bottom:0;right:3%;height:92vh;display:flex;align-items:flex-end;pointer-events:none;will-change:transform,opacity}
   #felix-holder img{height:100%;width:auto;animation:felixFloat 7s ease-in-out infinite;filter:drop-shadow(0 22px 40px rgba(15,4,30,.5));backface-visibility:hidden}
   @keyframes felixFloat{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,-10px,0)}}
@@ -115,7 +118,11 @@
   @keyframes glassping{75%,100%{transform:scale(2);opacity:0}}
   .glass-ping{position:absolute;inset:0;border-radius:9999px;background:#4ade80;opacity:.75;animation:glassping 1.5s cubic-bezier(0,0,.2,1) infinite}
   .hero-badge{display:inline-flex;align-items:center;gap:8px;border-radius:9999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);padding:6px 14px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-  @media(max-width:1023px){.hero-cards{display:none!important}}
+  /* mobile: show the cards below the buttons, capped + left-aligned to match text */
+  @media(max-width:1023px){
+    .hero-cards{width:100%;max-width:460px;margin-top:-12px}
+    section#top .grid{gap:32px}
+  }
 </style>
 </head>
 <body class="font-body antialiased">
@@ -145,7 +152,7 @@
   <main id="scroll-root">
 
     <!-- HERO -->
-    <section id="top" class="min-h-[100dvh] flex flex-col justify-end md:justify-center px-6 pt-28 md:pt-24 pb-16 md:pb-24">
+    <section id="top" class="min-h-[100svh] flex flex-col justify-start md:justify-center px-6 pt-24 pb-16 md:pb-24">
       <div class="max-w-6xl mx-auto w-full">
         <div class="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-8 lg:items-center">
 
@@ -472,7 +479,7 @@
     mx+=(tmx-mx)*0.07; my+=(tmy-my)*0.07;
     if(!bgHidden){
       const cx=-mx*10, cy=-my*8;
-      if(Math.abs(cx-pcx)>0.12||Math.abs(cy-pcy)>0.12){ candy.style.transform='scale(1.08) translate3d('+cx.toFixed(1)+'px,'+cy.toFixed(1)+'px,0)'; pcx=cx;pcy=cy; }
+      if(Math.abs(cx-pcx)>0.12||Math.abs(cy-pcy)>0.12){ candy.style.transform='translateZ(0) scale(1.08) translate3d('+cx.toFixed(1)+'px,'+cy.toFixed(1)+'px,0)'; pcx=cx;pcy=cy; }
       if(!isMobile){ const fx=mx*16, fy=my*7;
         if(Math.abs(fx-pfx)>0.12||Math.abs(fy-pfy)>0.12){ felixH.style.transform='translate3d('+fx.toFixed(1)+'px,'+fy.toFixed(1)+'px,0)'; pfx=fx;pfy=fy; } }
     }
