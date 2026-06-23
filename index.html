@@ -126,22 +126,6 @@
     .hero-cards{width:100%;max-width:460px;margin-top:-12px}
     section#top .grid{gap:32px}
   }
-
-  /* mini-felix dancer beside the CTA button */
-  @keyframes miniDance {
-    0%,100% { transform:rotate(-5deg) translateY(0) scaleX(1); }
-    15%      { transform:rotate(6deg)  translateY(-10px) scaleX(.96); }
-    30%      { transform:rotate(-4deg) translateY(-16px) scaleX(1.04); }
-    45%      { transform:rotate(7deg)  translateY(-8px) scaleX(.97); }
-    60%      { transform:rotate(-5deg) translateY(-13px) scaleX(1.03); }
-    75%      { transform:rotate(5deg)  translateY(-5px) scaleX(.98); }
-    90%      { transform:rotate(-3deg) translateY(-2px) scaleX(1); }
-  }
-  #mini-felix{height:60px;width:auto;display:none;transform-origin:bottom center;
-    animation:miniDance 1.4s ease-in-out infinite;
-    filter:drop-shadow(0 4px 10px rgba(0,0,0,.55));
-    image-rendering:auto}
-  @media(prefers-reduced-motion:reduce){#mini-felix{animation:none}}
 </style>
 </head>
 <body class="font-body antialiased">
@@ -192,11 +176,8 @@
             </p>
 
             <!-- CTAs -->
-            <div class="fade blur-fade bf-d3 flex flex-col gap-4" style="margin-top:2.5rem">
-              <div class="flex items-end gap-3">
-                <img id="mini-felix" alt="" aria-hidden="true">
-                <a href="#contact" class="btn btn-solid px-7 py-3.5" style="color:white">Bring Felix a story</a>
-              </div>
+            <div class="fade blur-fade bf-d3 flex flex-wrap items-center gap-5">
+              <a href="#contact" class="btn btn-solid px-7 py-3.5" style="color:white">Bring Felix a story</a>
               <a href="#work" class="text-white/80 hover:text-white transition underline underline-offset-4 decoration-white/30">See his work</a>
             </div>
           </div>
@@ -510,13 +491,6 @@
   }
 
   window.addEventListener('load', ()=>{
-    // mini-felix dancer: reuse existing image src, zero extra bytes
-    const miniFelix = document.getElementById('mini-felix');
-    const felixLayer = document.getElementById('felix-layer');
-    if (miniFelix && felixLayer) {
-      miniFelix.src = felixLayer.src;
-      miniFelix.style.display = 'block';
-    }
     // reveal-on-scroll via IntersectionObserver (one-time, no per-frame JS)
     const io=new IntersectionObserver((es)=>{
       es.forEach((e)=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
