@@ -96,6 +96,16 @@
     #candy-layer{background-position:center 40%}
   }
 
+  /* blur-fade animation (port of framer-motion BlurFade) */
+  /* hidden state: slight drop + blur; visible: float up slightly + clear */
+  .js .blur-fade{opacity:0;transform:translateY(6px);filter:blur(6px)}
+  .blur-fade{transition:opacity .4s ease-out,transform .4s ease-out,filter .4s ease-out}
+  .blur-fade.in{opacity:1;transform:translateY(-6px);filter:blur(0px)}
+  /* stagger helpers (maps to BlurFade delay prop) */
+  .bf-d1{transition-delay:.15s}
+  .bf-d2{transition-delay:.30s}
+  .bf-d3{transition-delay:.45s}
+
   /* glassmorphism hero cards (template merge) */
   section#top{contain:none}
   .glass-card{background:linear-gradient(135deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,.03) 100%);border:1px solid rgba(255,255,255,.12);border-radius:24px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 25px 50px -12px rgba(0,0,0,.5)}
@@ -142,7 +152,7 @@
           <div class="lg:col-span-7 space-y-7">
 
             <!-- Badge -->
-            <div class="fade hero-badge" style="width:fit-content">
+            <div class="fade blur-fade hero-badge" style="width:fit-content">
               <span style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:8px">
                 True stories, carried carefully
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="#facc15" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -150,17 +160,17 @@
             </div>
 
             <!-- Heading -->
-            <h1 class="fade font-display font-700 leading-[1.02] tracking-tight text-4xl sm:text-5xl md:text-7xl">
+            <h1 class="fade blur-fade bf-d1 font-display font-700 leading-[1.02] tracking-tight text-4xl sm:text-5xl md:text-7xl">
               The small moments<br>are the <span class="text-black font-800">real</span> ones.
             </h1>
 
             <!-- Description -->
-            <p class="fade text-base sm:text-lg text-black max-w-md leading-relaxed">
+            <p class="fade blur-fade bf-d2 text-base sm:text-lg text-black max-w-md leading-relaxed">
               Felix tells true, ordinary stories. When a product belongs inside one, he carries it there.
             </p>
 
             <!-- CTAs -->
-            <div class="fade flex flex-wrap items-center gap-5">
+            <div class="fade blur-fade bf-d3 flex flex-wrap items-center gap-5">
               <a href="#contact" class="btn btn-solid px-7 py-3.5">Bring Felix a story</a>
               <a href="#work" class="text-white/80 hover:text-white transition underline underline-offset-4 decoration-white/30">See his work</a>
             </div>
